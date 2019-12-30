@@ -19,10 +19,10 @@ function initialize(passport, getUserByEmail) {
   };
 
 
-  passport.use(new LocalStrategy({ usernameField: 'email' }),
-    authenticateUser);
+  passport.use(new LocalStrategy({ usernameField: 'email' },
+    authenticateUser));
   passport.serializeUser((user, done) => {});
   passport.serializeUser((id, done) => {});
 }
 
-module.export = initialize;
+module.exports = initialize;
