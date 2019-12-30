@@ -27,25 +27,22 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/', (req, res) => {
-  res.render('index.ejs', { name: 'Oleg' });
+app.get('/', checkAuthenticated, (req, res) => {
+  res.render('index.ejs', { name: req.user.name });
 });
 
 app.get('/login', (req, res) => {
-  res.render('login.ejs', { name: 'Oleg' });
+  res.render('login.ejs');
 });
 
 app.get('/register', (req, res) => {
   res.render('register.ejs', { name: 'Oleg' });
 });
 
-app.post('/login', (req, res) => {
-
-});
 
 app.post('/register', async (req, res) => {
   try {
@@ -63,10 +60,18 @@ app.post('/register', async (req, res) => {
   console.log(users);
 });
 
-app.post('/local', passport.authenticate('local', {
+app.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
   failureFlash: true,
 }));
 
-app.listen(3000);
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect('/login');
+}
+
+app.listen(3000, console.log('server started'));
